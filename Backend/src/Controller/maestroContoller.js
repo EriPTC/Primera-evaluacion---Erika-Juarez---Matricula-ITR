@@ -59,11 +59,6 @@ maestroController.updateMaestro = async (req, res) => {
         apellido = apellido?.trim()
         email = email?.trim()
 
-
-        if (!nombre || !apellido || !email || !password || !fechaContrato || !telefono) {
-            return res.status(400).json({ message: "Campos requeridos" })
-        }
-
         if (nombre.legth < 3) {
             return res.status(400).json({ message: "Nombre invalido" })
         }
