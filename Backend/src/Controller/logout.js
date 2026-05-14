@@ -2,7 +2,7 @@ const logoutController = {}
 
 logoutController.logout = (req, res) => {
     try{
-        res.clearCookies("authCookie")
+        res.clearCookie("authCookie")
         return res.status(200).json({message: "Sesion Cerrada con exito"})
 
     }catch(error){

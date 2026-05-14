@@ -18,7 +18,7 @@ recuperarContraMaestro.recuperarContra=async (req, res) => {
             return res.status(404).json({message: "Maestro no encontrado"})            
         }
 
-        const code = crypto.randomBytes(4)
+        const code = crypto.randomBytes(3).toString("hex")
 
         const token = JsonWebToken.sign(
             {email, code, userype: "Maestro", verified:false},
@@ -39,7 +39,7 @@ recuperarContraMaestro.recuperarContra=async (req, res) => {
             from : config.email.USER_EMAIL,
             to: email,
             subject: "Recuperar Contraseña",
-            Text: "Utiliza este codigo: " + code + "para recuperar tu contraseña. Expira en 15 minutos"
+            text: "Utiliza este codigo: " + code + " para recuperar tu contraseña. Expira en 15 minutos"
         }
 
         transporter.sendMail(mailOption, (error, info)=> {

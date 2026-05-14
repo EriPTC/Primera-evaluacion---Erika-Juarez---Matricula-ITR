@@ -32,13 +32,13 @@ registrarEstudiante.registrar = async (req, res) => {
 
         const passwordHash = await bcrypt.hash(password, 10)
 
-        const verificationCode = crypto.randomBytes(4)
+        const verificationCode = crypto.randomBytes(3).toString("hex")
 
         const tokenCode = JsonWebToken.sign(
             {
                 nombre,
                 apellido,
-                password,
+                password: passwordHash,
                 email,
                 fechaNacimiento,
                 especialidad_id,
@@ -53,7 +53,7 @@ registrarEstudiante.registrar = async (req, res) => {
 
         )
 
-        res.cookies("verificationToken", tokenCode, { maxAge: 15 * 60 * 1000 })
+        res.cookie("verificationToken", tokenCode, { maxAge: 15 * 60 * 1000 })
 
 
         const transporter = nodemailer.createTransport({
@@ -67,8 +67,8 @@ registrarEstudiante.registrar = async (req, res) => {
         const mailOption = {
             from: config.email.USER_EMAIL,
             to: email,
-            subject:"Verificar Correo",
-            Text: "Utiliza este codigo: " + verificationCode + "para verificar su correo. Expira en 15 minutos"
+            subject: "Verificar Correo",
+            text: "Utiliza este codigo: " + verificationCode + " para verificar su correo. Expira en 15 minutos"
         }
 
         transporter.sendMail(mailOption, (error, info) => {
@@ -92,61 +92,61 @@ registrarEstudiante.registrar = async (req, res) => {
 
 registrarEstudiante.verificarCodigo = async (req, res) => {
     try {
-         const { verificationCodeRequest } = req.body
-    const token = req.cookies.verificationToken
-    console.log(token)
-    const decoded = JsonWebToken.verify(token, config.JWT.SECRET)
+        const { verificationCodeRequest } = req.body
+        const token = req.cookies.verificationToken
+        console.log(token)
+        const decoded = JsonWebToken.verify(token, config.JWT.SECRET)
 
-    const {
-        nombre,
-        apellido,
-        password,
-        verificationCode: storedCode,
-        email,
-        fechaNacimiento,
-        especialidad_id,
-        carnet,
-        telefono,
-        isVerified,
-        loginAttemps,
-        timeout,
-    } = decoded
+        const {
+            nombre,
+            apellido,
+            password: passwordHash,
+            verificationCodeRequest: storedCode,
+            email,
+            fechaNacimiento,
+            especialidad_id,
+            carnet,
+            telefono,
+            isVerified,
+            loginAttemps,
+            timeout,
+        } = decoded
 
-    if (verificationCode !== storedCode){
-        return res.status(404).json({message: "Codigo Invalido"}) 
-    }
+        if (verificationCodeRequest !== storedCode) {
+            return res.status(404).json({ message: "Codigo Invalido" })
+        }
 
-     const newEstudiante = new estudiantesModel( {
-        nombre,
-        apellido,
-        password: passwordHash,
-        email,
-        fechaNacimiento,
-        especialidad_id,
-        carnet,
-        telefono,
-        isVerified,
-        loginAttemps,
-        timeout,
-    } )
+        const newEstudiante = new estudiantesModel({
+            nombre,
+            apellido,
+            password: passwordHash,
+            email,
+            fechaNacimiento,
+            especialidad_id,
+            carnet,
+            telefono,
+            isVerified,
+            loginAttemps,
+            timeout,
+        })
 
-    await newEstudiante.save()
+        await newEstudiante.save()
 
-    const estudiantes = await estudiantesModel.findOne({email})
+        const estudiantes = await estudiantesModel.findOne({ email })
 
-    estudiantes.isVerified= true
-    await estudiantes.save()
+        estudiantes.isVerified = true
+        await estudiantes.save()
 
-    res.clearCookies("verificationToken")
+        res.clearCookie("verificationToken")
 
-    return res.status(200).json({message: "Estudiante registrado"})
+        return res.status(200).json({ message: "Estudiante registrado" })
 
-        
+
     } catch (error) {
         console.log("Error " + error)
         return res.status(500).json
             ({ message: "Internal Server Error" })
     }
-   }
+}
 
-   export default registrarEstudiante
+export default registrarEstudiante

@@ -31,7 +31,7 @@ registrarMaestro.registrar = async (req, res) => {
 
         const passwordHash = await bcrypt.hash(password, 10)
 
-        const verificationCode = crypto.randomBytes(4)
+        const verificationCode = crypto.randomBytes(3).toString("hex")
 
         const tokenCode = JsonWebToken.sign(
             {
@@ -66,7 +66,7 @@ registrarMaestro.registrar = async (req, res) => {
             from: config.email.USER_EMAIL,
             to: email,
             subject: "Verificar Correo",
-            Text: "Utiliza este codigo: " + verificationCode + "para verificar su correo. Expira en 15 minutos"
+            text: "Utiliza este codigo: " + verificationCode + " para verificar su correo. Expira en 15 minutos"
         }
 
         transporter.sendMail(mailOption, (error, info) => {
@@ -90,13 +90,13 @@ registrarMaestro.registrar = async (req, res) => {
 
 registrarMaestro.verificarCodigo = async (req, res) => {
     try {
-        const { verificationCode } = req.body
+        const { verificationCodeRequest } = req.body
         const token = req.cookies.verificationToken
         console.log(token)
         const decoded = JsonWebToken.verify(token, config.JWT.SECRET)
 
         const {
-            verificationCode: storedCode,
+            verificationCodeRequest: storedCode,
             nombre,
             apellido,
             email,
@@ -110,7 +110,7 @@ registrarMaestro.verificarCodigo = async (req, res) => {
 
         } = decoded
 
-        if (verificationCode !== storedCode) {
+        if (verificationCodeRequest !== storedCode) {
             return res.status(404).json({ message: "Codigo Invalido" })
         }
 
@@ -134,7 +134,7 @@ registrarMaestro.verificarCodigo = async (req, res) => {
         maestros.isVerified = true
         await maestros.save()
 
-        res.clearCookies("verificationToken")
+        res.clearCookie("verificationToken")
 
         return res.status(200).json({ message: "Maestro registrado" })
 
@@ -146,4 +146,4 @@ registrarMaestro.verificarCodigo = async (req, res) => {
     }
 }
 
-export default registrarMaestro
+export default registrarMaestro 

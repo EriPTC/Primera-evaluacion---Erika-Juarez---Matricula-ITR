@@ -40,7 +40,7 @@ loginMaestro.login = async (req, res) => {
             { expiresIn: "30d" },
         );
 
-        res.cookies("authCookie", token)
+        res.cookie("authCookie", token)
         return res.status(200).json({ message: "Login Exitoso" })
 
 
