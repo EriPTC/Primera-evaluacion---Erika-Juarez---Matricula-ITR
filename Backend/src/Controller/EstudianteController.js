@@ -59,13 +59,9 @@ estudianteController.updateEstudiante = async (req, res) => {
         nombre = nombre?.trim()
         apellido = apellido?.trim()
         email = email?.trim()
-        carnet = carnet?.trim()
         telefono = telefono?.trim()
         especialidad_id = especialidad_id?.trim()
 
-        if (!nombre || !apellido || !email || !password || !fechaNacimiento || !especialidad_id || !carnet || !telefono) {
-            return res.status(400).json({ message: "Campos requeridos" })
-        }
 
         if (nombre.legth < 3) {
             return res.status(400).json({ message: "Nombre invalido" })
