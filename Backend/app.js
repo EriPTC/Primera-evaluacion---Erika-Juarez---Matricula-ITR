@@ -37,18 +37,18 @@ app.use (express.json())
 
 
 //Endporints
-app.use("/api/recuperarContraseñaEstudiante ",limiter,recuperarContraEstudiante)
-app.use("/api/recuperarContraseñaMaestro ",limiter,recuperarContraMaestro)
-app.use("/api/especialidadesController ",limiter,especialidadesController)
-app.use("/api/estudianteController ",limiter,estudianteController)
-app.use("/api/LoginEstudiante ",limiter,LoginEstudiante)
-app.use("/api/loginMaestro ",limiter,loginMaestro)
-app.use("/api/logoutController ",limiter,logoutController)
-app.use("/api/maestroController ",limiter,maestroController)
-app.use("/api/MateriasController ",limiter,MateriasController)
-app.use("/api/matriculaController ",limiter,matriculaController)
-app.use("/api/registrarEstudiante ",limiter,registrarEstudiante)
-app.use("/api/registrarMaestro ",limiter,registrarMaestro)
+app.use("/api/recuperarContraseñaEstudiante",limiter,recuperarContraEstudiante)
+app.use("/api/recuperarContraseñaMaestro",limiter,recuperarContraMaestro)
+app.use("/api/especialidadesController",limiter,especialidadesController)
+app.use("/api/estudianteController",limiter,estudianteController)
+app.use("/api/LoginEstudiante",limiter,LoginEstudiante)
+app.use("/api/loginMaestro",limiter,loginMaestro)
+app.use("/api/logoutController",limiter,logoutController)
+app.use("/api/maestroController",limiter,maestroController)
+app.use("/api/MateriasController",limiter,MateriasController)
+app.use("/api/matriculaController",limiter,matriculaController)
+app.use("/api/registrarEstudiante",limiter,registrarEstudiante)
+app.use("/api/registrarMaestro",limiter,registrarMaestro)
 
 
 export default app;
